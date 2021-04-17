@@ -103,7 +103,7 @@ class DataHandler:
                     # Flush old data & reset
                     self.documents.append((docID, sections))
                     docID, sections, paragraph, start_line = None, [], [], None
-                elif not start_line and lno == start_line + 1:   # Doc title
+                elif not start_line and lno == int(0 if start_line is None else start_line) + 1:   # Doc title
                     document_id_to_title[docID] = line
                 elif _heading:
 
