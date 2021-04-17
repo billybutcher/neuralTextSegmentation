@@ -81,8 +81,8 @@ def get_input(sample_type, shuffle_documents, pad, trained_sent2vec_model=None):
 
     X, Y = [], []
     _total_samples,_start_time = len(samples), time.time()
-    #print len(samples)
-    #pdb.set_trace()
+    print len(samples)
+    pdb.set_trace()
     for _idx, sample in enumerate(samples):
         # Each sample is a document
         # Each sample is a list of tuples with each tuple as (sentence, groundTruth)
