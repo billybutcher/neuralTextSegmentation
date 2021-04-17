@@ -96,8 +96,8 @@ class DataHandler:
                     if len(paragraph) > 0 or len(sections) > 0 or (docID is not None) or (start_line is not None):
                         print "SERIOUS PROBLEM !!"
                     paragraph, sections, docID, start_line = [], [], _doc_start.group(2), lno
-                    print "startline: "
-                    print(startline)
+                    #print "startline: "
+                    #print(startline)
                     #print "docID: %s" % (docID)
                 elif _doc_end:
                     # Flush old data & reset
