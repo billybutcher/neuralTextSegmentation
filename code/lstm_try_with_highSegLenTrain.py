@@ -1,6 +1,7 @@
 from keras.models import Sequential, Model
 from keras.models import load_model
-from keras.layers import Activation, Dense, Dropout, Embedding, Flatten, RepeatVector, Input, Merge, merge, Convolution1D, Convolution2D, MaxPooling1D, GlobalMaxPooling1D, LSTM, Bidirectional
+from keras.layers import Activation, Dense, Dropout, Embedding, Flatten, RepeatVector, Input, Convolution1D, Convolution2D, MaxPooling1D, GlobalMaxPooling1D, LSTM, Bidirectional
+from keras.layers import merge as Merge
 from keras.layers.wrappers import TimeDistributed
 from keras.optimizers import SGD
 from my_categorical import to_categorical_MULTI_DIM, w_binary_crossentropy
