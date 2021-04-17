@@ -51,10 +51,10 @@ saved_model_epoch_done = None
 
 def load_saved_model():
     global saved_model_epoch_done
-    print "====== Loading the saved model ======="
+    print"====== Loading the saved model ======="
     filename = sys.argv[1]
     epoch_done = filename.split(".")[0].split("_")[-1]
-    print ">>> Continuing from epoch %d <<<<" %(int(epoch_done)+1)
+    print">>> Continuing from epoch %d <<<<" %(int(epoch_done)+1)
     saved_model_epoch_done = int(epoch_done)
 
     model = load_model(filename)
