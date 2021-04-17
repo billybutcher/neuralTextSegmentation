@@ -104,7 +104,7 @@ class DataHandler:
                     self.documents.append((docID, sections))
                     docID, sections, paragraph, start_line = None, [], [], None
                 elif not start_line and lno == int(0 if start_line is None else start_line) + 1:   # Doc title
-                    document_id_to_title[docID] = line
+                    self.document_id_to_title[docID] = line
                 elif _heading:
 
                     # Do this only for the top sections as we are using the paragraphs
