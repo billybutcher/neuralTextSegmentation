@@ -34,6 +34,9 @@ def get_input(sample_type, shuffle_documents, pad, trained_sent2vec_model=None):
     if sample_type == 1:
         # NOT SURE ABOUT THIS TYPE!
         sample_type, samples = data_handler.get_samples()            # Get samples, each sample is a set of INPUT_VECTOR_LENGTH consecutive sentences. No document information captured
+    elif sample_type == 2:
+        ld = load_data.LoadData()
+        sample_type, samples = ld.load_wikipedia_sequence()
     elif sample_type in (2, 3):
         # type2 : Get samples, each sample is a document (a set of sentences resulting in a sequence), or, (NUM_DOCUMENTS, NUM_SENTENCES, SENTENCE)
         # type3 : Same as type2 just merge the samples to remove the sequence information and treat as simple sentence classification problem, i.e. (TOTAL_NUM_SENTENCES, SENTENCE)
