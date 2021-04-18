@@ -4,7 +4,7 @@ import nltk
 nltk.data.path.append("../nltk_data")
 
 class LoadData:
-    DIR="./data/"
+    DIR="/content/neuralTextSegmentation/code/data/"
     SUB_DIRS = {
         "fiction": "fiction/new/",
         "clinical": "clinical/",
