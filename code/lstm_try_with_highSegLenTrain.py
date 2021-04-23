@@ -107,7 +107,7 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
         pool_R = TimeDistributed(GlobalMaxPooling1D(), name='TD-GlobalMaxPooling-right-'+str(n_gram)+"gram")(rig)
         convsL.append(pool_L), convsM.append(pool_M), convsR.append(pool_R)
 
-    convoluted_left, convoluted_mid, convoluted_right = Merge(mode='concat')(convsL), Merge(mode='concat')(convsM), Merge(mode='concat')(convsR)
+    convoluted_left, convoluted_mid, convoluted_right = Merge(convsL), Merge(convsM), Merge(convsR)
     CONV_DIM = sum(conv_hidden_units)
 
     flat_mid = Flatten()(convoluted_mid)
@@ -123,7 +123,7 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
     encode_right = AttentionWithContext(name='encode-right-attention')(context_encoder(context_encoder_intermediate1(convoluted_right)))
     encode_left_drop, encode_mid_drop, encode_right_drop = Dropout(0.2)(encode_left), Dropout(0.2)(encode_mid), Dropout(0.2)(encode_right)
 
-    encoded_info = Merge(mode='concat', name='encode_info')([encode_left_drop, encode_mid_drop, encode_right_drop])
+    encoded_info = Merge([encode_left_drop, encode_mid_drop, encode_right_drop])
 
     decoded = Dense(500, name='decoded')(encoded_info)
     decoded_drop = Dropout(0.25, name='decoded_drop')(decoded)
