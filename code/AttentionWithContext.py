@@ -44,7 +44,7 @@ class AttentionWithContext(Layer):
 
     def build(self, input_shape):
         assert len(input_shape) == 3
-
+        #fix add_weight
         self.W = self.add_weight((input_shape[-1], input_shape[-1],),
                                  initializer=self.init,
                                  name='{}_W'.format(self.name),
