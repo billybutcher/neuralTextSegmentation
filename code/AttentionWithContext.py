@@ -23,11 +23,10 @@ class AttentionWithContext(Layer):
             model.add(AttentionWithContext())
         """
 
-    def __init__(self, name,
+    def __init__(self,
                  W_regularizer=None, u_regularizer=None, b_regularizer=None,
                  W_constraint=None, u_constraint=None, b_constraint=None,
                  bias=True, **kwargs):
-        self.name = name
         
         self.supports_masking = True
         self.init = initializations.get('glorot_uniform')
@@ -46,19 +45,19 @@ class AttentionWithContext(Layer):
     def build(self, input_shape):
         assert len(input_shape) == 3
         #fix add_weight
-        self.W = self.add_weight((input_shape[-1], input_shape[-1],),
+        self.W = self.add_weight(shape=(input_shape[-1], input_shape[-1],),
                                  initializer=self.init,
                                  name='{}_W'.format(self.name),
                                  regularizer=self.W_regularizer,
                                  constraint=self.W_constraint)
         if self.bias:
-            self.b = self.add_weight((input_shape[-1],),
+            self.b = self.add_weight(shape=(input_shape[-1],),
                                      initializer='zero',
                                      name='{}_b'.format(self.name),
                                      regularizer=self.b_regularizer,
                                      constraint=self.b_constraint)
 
-        self.u = self.add_weight((input_shape[-1],),
+        self.u = self.add_weight(shape=(input_shape[-1],),
                                  initializer=self.init,
                                  name='{}_u'.format(self.name),
                                  regularizer=self.u_regularizer,
