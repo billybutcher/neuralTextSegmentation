@@ -465,7 +465,7 @@ if __name__ == "__main__":
     if LOAD_SAVED_MODEL_AND_CONTINUE_TRAIN:
         model = load_saved_model()
     else:
-        model = lstm_model(-1, EMBEDDING_DIM, embedding_W, len(dictionary_object.word2id_dic))
+        model = lstm_model(-1, EMBEDDING_DIM, embedding_W, len(dictionary_object.word2id_dic)) #fix 
 
     train_LSTM(X_wiki, Y_wiki, model, embedding_W, train_split=0.7, epochs=20, batch_size=40)
     #train_LSTM(X_bio, Y_bio, model, embedding_W, train_split=0.7, epochs=1, batch_size=32)
