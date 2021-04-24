@@ -23,11 +23,12 @@ class AttentionWithContext(Layer):
             model.add(AttentionWithContext())
         """
 
-    def __init__(self,
+    def __init__(self, name,
                  W_regularizer=None, u_regularizer=None, b_regularizer=None,
                  W_constraint=None, u_constraint=None, b_constraint=None,
                  bias=True, **kwargs):
-
+        self.name = name
+        
         self.supports_masking = True
         self.init = initializations.get('glorot_uniform')
 
