@@ -70,13 +70,15 @@ class AttentionWithContext(Layer):
         return None
 
     def call(self, x, mask=None):
-        uit = K.dot(x, self.W)
+        #uit = K.dot(x, self.W)
+        uit = K.squeeze(K.dot(x,K.expand_dims(self.W)),axis=-1)
 
         if self.bias:
             uit += self.b
 
         uit = K.tanh(uit)
-        ait = K.dot(uit, self.u)
+        #ait = K.dot(uit, self.u)
+        ait = K.squeeze(K.dot(uit,K.expand_dims(self.u)),axis=-1)
 
         a = K.exp(ait)
 
