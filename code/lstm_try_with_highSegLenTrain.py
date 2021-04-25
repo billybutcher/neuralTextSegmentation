@@ -1,7 +1,8 @@
+%%writefile /content/neuralTextSegmentation/code/lstm_try_with_highSegLenTrain.py
 from keras.models import Sequential, Model
 from keras.models import load_model
 from keras.layers import Activation, Dense, Dropout, Embedding, Flatten, RepeatVector, Input, Convolution1D, Convolution2D, MaxPooling1D, GlobalMaxPooling1D, LSTM, Bidirectional
-from keras.layers import concatenate as Merge #UPDATE 
+from keras.layers import Concatenate as Merge #UPDATE 
 from keras.layers.wrappers import TimeDistributed
 from keras.optimizers import SGD
 from my_categorical import to_categorical_MULTI_DIM, w_binary_crossentropy
@@ -107,7 +108,7 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
         pool_R = TimeDistributed(GlobalMaxPooling1D(), name='TD-GlobalMaxPooling-right-'+str(n_gram)+"gram")(rig)
         convsL.append(pool_L), convsM.append(pool_M), convsR.append(pool_R)
 
-    convoluted_left, convoluted_mid, convoluted_right = Merge(convsL), Merge(convsM), Merge(convsR)
+    convoluted_left, convoluted_mid, convoluted_right = Merge()(convsL), Merge()(convsM), Merge()(convsR)
     CONV_DIM = sum(conv_hidden_units)
 
     flat_mid = Flatten()(convoluted_mid)
@@ -123,7 +124,7 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
     encode_right = AttentionWithContext(name='encode-right-attention')(context_encoder(context_encoder_intermediate1(convoluted_right)))
     encode_left_drop, encode_mid_drop, encode_right_drop = Dropout(0.2)(encode_left), Dropout(0.2)(encode_mid), Dropout(0.2)(encode_right)
 
-    encoded_info = Merge(axis=1)([encode_left_drop, encode_mid_drop, encode_right_drop])
+    encoded_info = Merge()([encode_left_drop, encode_mid_drop, encode_right_drop])
 
     decoded = Dense(500, name='decoded')(encoded_info)
     decoded_drop = Dropout(0.25, name='decoded_drop')(decoded)
