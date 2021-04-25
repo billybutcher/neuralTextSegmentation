@@ -123,7 +123,7 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
     encode_right = AttentionWithContext(name='encode-right-attention')(context_encoder(context_encoder_intermediate1(convoluted_right)))
     encode_left_drop, encode_mid_drop, encode_right_drop = Dropout(0.2)(encode_left), Dropout(0.2)(encode_mid), Dropout(0.2)(encode_right)
 
-    encoded_info = Merge([encode_left_drop, encode_mid_drop, encode_right_drop])
+    encoded_info = Merge(axis=1)([encode_left_drop, encode_mid_drop, encode_right_drop])
 
     decoded = Dense(500, name='decoded')(encoded_info)
     decoded_drop = Dropout(0.25, name='decoded_drop')(decoded)
