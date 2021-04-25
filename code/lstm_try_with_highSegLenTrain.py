@@ -108,7 +108,7 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
         pool_R = TimeDistributed(GlobalMaxPooling1D(), name='TD-GlobalMaxPooling-right-'+str(n_gram)+"gram")(rig)
         convsL.append(pool_L), convsM.append(pool_M), convsR.append(pool_R)
 
-    convoluted_left, convoluted_mid, convoluted_right = Merge()(convsL), Merge()(convsM), Merge()(convsR)
+    convoluted_left, convoluted_mid, convoluted_right = Merge(axis=-1)(convsL), Merge(axis=-1)(convsM), Merge(axis=-1)(convsR)
     CONV_DIM = sum(conv_hidden_units)
 
     flat_mid = Flatten()(convoluted_mid)
@@ -124,7 +124,7 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
     encode_right = AttentionWithContext(name='encode-right-attention')(context_encoder(context_encoder_intermediate1(convoluted_right)))
     encode_left_drop, encode_mid_drop, encode_right_drop = Dropout(0.2)(encode_left), Dropout(0.2)(encode_mid), Dropout(0.2)(encode_right)
 
-    encoded_info = Merge()([encode_left_drop, encode_mid_drop, encode_right_drop]) #fix: Got inputs shapes: [(None, 11, 1000), (None, 300), (None, 11, 1000)]
+    encoded_info = Merge(axis=-1, name = 'encode_info')([encode_left_drop, encode_mid_drop, encode_right_drop]) #fix: Got inputs shapes: [(None, 11, 1000), (None, 300), (None, 11, 1000)]
 
     decoded = Dense(500, name='decoded')(encoded_info)
     decoded_drop = Dropout(0.25, name='decoded_drop')(decoded)
