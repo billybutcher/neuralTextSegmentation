@@ -1,4 +1,3 @@
-%%writefile /content/neuralTextSegmentation/code/lstm_try_with_highSegLenTrain.py
 from keras.models import Sequential, Model
 from keras.models import load_model
 from keras.layers import Activation, Dense, Dropout, Embedding, Flatten, RepeatVector, Input, Convolution1D, Convolution2D, MaxPooling1D, GlobalMaxPooling1D, LSTM, Bidirectional
