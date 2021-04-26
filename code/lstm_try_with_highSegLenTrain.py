@@ -112,9 +112,9 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
     flat_mid = Flatten()(convoluted_mid)
     encode_mid = Dense(300, name='dense-intermediate-mid-encoder')(flat_mid)
     #LSTM(500, recurrent_dropout=0.2, implementation=2, dropout=0.2, input_shape=(10, 800), stateful=False, return_sequences=True)
-    context_encoder_intermediate1 = Bidirectional(LSTM(500, recurrent_dropout=0.2, implementation=2,dropout=0.2, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), stateful=False, return_sequences=True)), name='BiLSTM-context-encoder-intermediate1', merge_mode='concat')
+    context_encoder_intermediate1 = Bidirectional(LSTM(500, recurrent_dropout=0.2, implementation=2,dropout=0.2, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), stateful=False, return_sequences=True), name='BiLSTM-context-encoder-intermediate1', merge_mode='concat')
     #context_encoder_intermediate2 = Bidirectional(LSTM(500, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), consume_less='gpu', dropout_W=0.1, dropout_U=0.1, return_sequences=True, stateful=False), name='BiLSTM-context-encoder-intermediate2', merge_mode='concat')
-    context_encoder = Bidirectional(LSTM(500, recurrent_dropout=0.2, implementation=2,dropout=0.2, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), stateful=False, return_sequences=True)), name='BiLSTM-context-encoder', merge_mode='concat')
+    context_encoder = Bidirectional(LSTM(500, recurrent_dropout=0.2, implementation=2,dropout=0.2, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), stateful=False, return_sequences=True), name='BiLSTM-context-encoder', merge_mode='concat')
     
     #encode_left = Attention(name='encode-left-attention')(context_encoder(context_encoder_intermediate1(convoluted_left)))
     #encode_right = Attention(name='encode-right-attention')(context_encoder(context_encoder_intermediate1(convoluted_right)))
