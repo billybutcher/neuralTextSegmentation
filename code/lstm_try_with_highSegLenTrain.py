@@ -80,17 +80,16 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
     main_input = Input(shape=(1, embedding_dim), dtype='float32', name='main-input')
     right_context = Input(shape=(ONE_SIDE_CONTEXT_SIZE+1, embedding_dim), dtype='float32', name='right-context')
 
-    context_embedder = TimeDistributed(Embedding(vocab_size + 1, GLOVE_EMBEDDING_DIM, weights=[embedding_matrix], input_length=embedding_dim, init='uniform'))
-    main_input_embedder = TimeDistributed(Embedding(vocab_size + 1, GLOVE_EMBEDDING_DIM, weights=[embedding_matrix], input_length=embedding_dim, init='uniform'))
+    context_embedder = TimeDistributed(Embedding(vocab_size + 1, GLOVE_EMBEDDING_DIM, embeddings_initializer="uniform", weights=[embedding_matrix], input_length=embedding_dim))
+    #Embedding(80621, 300, embeddings_initializer="uniform", weights=[array([[ ..., input_length=20)
+    main_input_embedder = TimeDistributed(Embedding(vocab_size + 1, GLOVE_EMBEDDING_DIM, embeddings_initializer="uniform", weights=[embedding_matrix], input_length=embedding_dim))
     embedded_input_left, embedded_input_main, embedded_input_right = context_embedder(left_context), main_input_embedder(main_input), context_embedder(right_context)
 
     convsL, convsM, convsR = [], [], []
     for n_gram, hidden_units in zip(ngram_filters, conv_hidden_units):
-        conv_layer = Convolution1D(nb_filter=hidden_units,
-                             filter_length=n_gram,
-                             border_mode='same',
-                             #border_mode='valid',
-                             activation='tanh', name='Convolution-'+str(n_gram)+"gram")
+        #Conv1D(name="Convolution-2gram", activation="tanh", padding="same", filters=200, kernel_size=2)
+        conv_layer = Conv1D(name='Convolution-'+str(n_gram)+"gram", activation="tanh", padding="same", filters=hidden_units, kernel_size=n_gram)
+        
         lef = TimeDistributed(conv_layer, name='TD-convolution-left-'+str(n_gram)+"gram")(embedded_input_left)
         mid = TimeDistributed(conv_layer, name='TD-convolution-mid-'+str(n_gram)+"gram")(embedded_input_main)
         rig = TimeDistributed(conv_layer, name='TD-convolution-right-'+str(n_gram)+"gram")(embedded_input_right)
@@ -112,11 +111,11 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
 
     flat_mid = Flatten()(convoluted_mid)
     encode_mid = Dense(300, name='dense-intermediate-mid-encoder')(flat_mid)
-
-    context_encoder_intermediate1 = Bidirectional(LSTM(500, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), consume_less='gpu', dropout_W=0.2, dropout_U=0.2, return_sequences=True, stateful=False), name='BiLSTM-context-encoder-intermediate1', merge_mode='concat')
+    #LSTM(500, recurrent_dropout=0.2, implementation=2, dropout=0.2, input_shape=(10, 800), stateful=False, return_sequences=True)
+    context_encoder_intermediate1 = Bidirectional(LSTM(500, recurrent_dropout=0.2, implementation=2,dropout=0.2, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), stateful=False, return_sequences=True)), name='BiLSTM-context-encoder-intermediate1', merge_mode='concat')
     #context_encoder_intermediate2 = Bidirectional(LSTM(500, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), consume_less='gpu', dropout_W=0.1, dropout_U=0.1, return_sequences=True, stateful=False), name='BiLSTM-context-encoder-intermediate2', merge_mode='concat')
-    context_encoder = Bidirectional(LSTM(500, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), consume_less='gpu', dropout_W=0.2, dropout_U=0.2, return_sequences=True, stateful=False), name='BiLSTM-context-encoder', merge_mode='concat')
-
+    context_encoder = Bidirectional(LSTM(500, recurrent_dropout=0.2, implementation=2,dropout=0.2, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), stateful=False, return_sequences=True)), name='BiLSTM-context-encoder', merge_mode='concat')
+    
     #encode_left = Attention(name='encode-left-attention')(context_encoder(context_encoder_intermediate1(convoluted_left)))
     #encode_right = Attention(name='encode-right-attention')(context_encoder(context_encoder_intermediate1(convoluted_right)))
     encode_left = AttentionWithContext(name='encode-left-attention')(context_encoder(context_encoder_intermediate1(convoluted_left)))
