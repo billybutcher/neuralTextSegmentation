@@ -1,9 +1,9 @@
-from tf.keras.models import Sequential, Model
-from tf.keras.models import load_model
-from tf.keras.layers import Activation, Dense, Dropout, Embedding, Flatten, Reshape, RepeatVector, Input, Conv1D, Convolution2D, MaxPooling1D, GlobalMaxPooling1D, LSTM, Bidirectional
-from tf.keras.layers import Concatenate as Merge #UPDATE 
-from tf.keras.layers.wrappers import TimeDistributed
-from tf.keras.optimizers import SGD
+from keras.models import Sequential, Model
+from keras.models import load_model
+from keras.layers import Activation, Dense, Dropout, Embedding, Flatten, Reshape, RepeatVector, Input, Conv1D, Convolution2D, MaxPooling1D, GlobalMaxPooling1D, LSTM, Bidirectional
+from keras.layers import Concatenate as Merge #UPDATE 
+from keras.layers.wrappers import TimeDistributed
+from keras.optimizers import SGD
 from my_categorical import to_categorical_MULTI_DIM, w_binary_crossentropy
 
 import numpy as np
