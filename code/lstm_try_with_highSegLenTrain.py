@@ -109,7 +109,8 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
     convoluted_left, convoluted_mid, convoluted_right = Merge(axis=-1)(convsL), Merge(axis=-1)(convsM), Merge(axis=-1)(convsR)
     CONV_DIM = sum(conv_hidden_units)
 
-    flat_mid = Flatten()(convoluted_mid)
+    #flat_mid = Flatten()(convoluted_mid)
+    flat_mid = Reshape((-1,))(convoluted_mid)
     encode_mid = Dense(300, name='dense-intermediate-mid-encoder')(flat_mid)
     #LSTM(500, recurrent_dropout=0.2, implementation=2, dropout=0.2, input_shape=(10, 800), stateful=False, return_sequences=True)
     context_encoder_intermediate1 = Bidirectional(LSTM(500, recurrent_dropout=0.2, implementation=2,dropout=0.2, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), stateful=False, return_sequences=True), name='BiLSTM-context-encoder-intermediate1', merge_mode='concat')
