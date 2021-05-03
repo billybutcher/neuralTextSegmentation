@@ -111,24 +111,26 @@ def lstm_model(sequences_length_for_training, embedding_dim, embedding_matrix, v
     CONV_DIM = sum(conv_hidden_units)
     print " CONV_DIM: ", CONV_DIM
 
-    flat_mid = Flatten()(convoluted_mid)
-    #flat_mid = Reshape((-1,))(convoluted_mid)
-    print "flat_mid:", flat_mid.shape
-    encode_mid = Dense(300, name='dense-intermediate-mid-encoder')(flat_mid)
-    print "encode_mid:", encode_mid.shape
+    #flat_mid = Flatten()(convoluted_mid)
+    #print "flat_mid:", flat_mid.shape
+    #encode_mid = Dense(300, name='dense-intermediate-mid-encoder')(flat_mid)
+    #print "encode_mid:", encode_mid.shape
     #LSTM(500, recurrent_dropout=0.2, implementation=2, dropout=0.2, input_shape=(10, 800), stateful=False, return_sequences=True)
     context_encoder_intermediate1 = Bidirectional(LSTM(500, recurrent_dropout=0.2, implementation=2,dropout=0.2, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), stateful=False, return_sequences=True), name='BiLSTM-context-encoder-intermediate1', merge_mode='concat')
     #context_encoder_intermediate2 = Bidirectional(LSTM(500, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), consume_less='gpu', dropout_W=0.1, dropout_U=0.1, return_sequences=True, stateful=False), name='BiLSTM-context-encoder-intermediate2', merge_mode='concat')
     context_encoder = Bidirectional(LSTM(500, recurrent_dropout=0.2, implementation=2,dropout=0.2, input_shape=(ONE_SIDE_CONTEXT_SIZE, CONV_DIM), stateful=False, return_sequences=True), name='BiLSTM-context-encoder', merge_mode='concat')
     
+    main_encoder_intermediate1 = Bidirectional(LSTM(500, recurrent_dropout=0.2, implementation=2,dropout=0.2, input_shape=(1, CONV_DIM), stateful=False, return_sequences=True), name='BiLSTM-context-encoder-intermediate1', merge_mode='concat')
+    main_encoder = Bidirectional(LSTM(500, recurrent_dropout=0.2, implementation=2,dropout=0.2, input_shape=(1, CONV_DIM), stateful=False, return_sequences=True), name='BiLSTM-context-encoder', merge_mode='concat')
     #encode_left = Attention(name='encode-left-attention')(context_encoder(context_encoder_intermediate1(convoluted_left)))
     #encode_right = Attention(name='encode-right-attention')(context_encoder(context_encoder_intermediate1(convoluted_right)))
     encode_left = AttentionWithContext(name='encode-left-attention')(context_encoder(context_encoder_intermediate1(convoluted_left)))
     encode_right = AttentionWithContext(name='encode-right-attention')(context_encoder(context_encoder_intermediate1(convoluted_right)))
-    print "encode_left:", encode_left.shape, " encode_right:", encode_right.shape
+    encode_mid = AttentionWithContext(name='encode-mid-attention')(main_encoder(main_encoder_intermediate1(convoluted_mid)))
+    print "encode_left:", encode_left.shape, " encode_mid:", encode_mid.shape, " encode_right:", encode_right.shape
     encode_left_drop, encode_mid_drop, encode_right_drop = Dropout(0.2)(encode_left), Dropout(0.2)(encode_mid), Dropout(0.2)(encode_right)
 
-    encoded_info = Merge(axis=-1, name = 'encode_info')([encode_left_drop, encode_mid_drop, encode_right_drop]) #fix: Got inputs shapes: [(None, 11, 1000), (None, 300), (None, 11, 1000)]
+    encoded_info = Merge(name = 'encode_info')([encode_left_drop, encode_mid_drop, encode_right_drop]) #fix: Got inputs shapes: [(None, 11, 1000), (None, 300), (None, 11, 1000)]
 
     decoded = Dense(500, name='decoded')(encoded_info)
     decoded_drop = Dropout(0.25, name='decoded_drop')(decoded)
